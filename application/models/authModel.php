@@ -30,7 +30,6 @@ class authModel extends CI_Model
     }
 
 
-
     public function insertUser($data)
     {
         $this->db->insert('user', $data);
@@ -55,7 +54,6 @@ class authModel extends CI_Model
         $this->db->where('email', $email);
         $this->db->update('user');
     }
-
 
 
     public function deleteUserTokenByEmail($email)

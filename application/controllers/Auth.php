@@ -16,7 +16,11 @@ class Auth extends CI_Controller
 	public function index()
 	{
 
-		if ($this->session->userdata('email')) {
+		if ($this->session->userdata('role') == 1) {
+			redirect('admin');
+		} else if ($this->session->userdata('role') == 2) {
+			redirect('user');
+		} else if ($this->session->userdata('role') == 3) {
 			redirect('customer');
 		};
 		$rules =
@@ -50,9 +54,9 @@ class Auth extends CI_Controller
 		if ($this->form_validation->run() == false) {
 
 			$data['title'] = 'Login';
-			$this->load->view('templates/auth/header', $data);
-			$this->load->view('auth/login');
-			$this->load->view('templates/auth/footer');
+			$this->load->view('templates/master/header_master', $data);
+			$this->load->view('auth/form-login');
+			$this->load->view('templates/master/footer_master');
 		} else {
 			$this->_login();
 		}
@@ -74,11 +78,15 @@ class Auth extends CI_Controller
 			if (md5($password, $user['password'])) {
 				$data = [
 					'email' => $user['email'],
-					'role' => $user['role']
+					'role' => $user['role'],
+					'user_id' => $user['user_id'],
+					'username' => $user['username']
 				];
 				$this->session->set_userdata($data);
 				if ($user['role'] == 1) {
 					redirect('admin');
+				} else if ($user['role'] == 2) {
+					redirect('user');
 				} else {
 					redirect('customer');
 				}
@@ -95,9 +103,6 @@ class Auth extends CI_Controller
 	public function registration()
 	{
 
-		if ($this->session->userdata('email')) {
-			redirect('customer');
-		};
 		$rules =
 			[
 				[
@@ -158,10 +163,9 @@ class Auth extends CI_Controller
 
 		if ($this->form_validation->run() == false) {
 			$data['title'] = 'Registration';
-			$this->load->view('templates/auth/header', $data);
-			$this->load->view('templates/auth/header');
-			$this->load->view('auth/registration');
-			$this->load->view('templates/auth/footer');
+			$this->load->view('templates/master/header_master', $data);
+			$this->load->view('auth/form-register');
+			$this->load->view('templates/master/footer_master');
 		} else {
 			$email = $this->input->post('email');
 			$data = [
@@ -169,13 +173,11 @@ class Auth extends CI_Controller
 				'password' => md5($this->input->post('password1')),
 				'email' => htmlspecialchars($email, true),
 				'user_image' => 'default.jpg',
-				'role' => '2',
+				'role' => '3',
 				'is_active' => '0',
 				'updated_at' => date("Y-d-m H:i:s"),
 				'created_at' => date("Y-d-m H:i:s")
 			];
-
-
 
 			$token = base64_encode(random_bytes(32));
 			$user_token = [
@@ -201,8 +203,8 @@ class Auth extends CI_Controller
 			[
 				'protocol' => 'smtp',
 				'smtp_host' => 'ssl://smtp.gmail.com',
-				'smtp_user' => 'danalif074@gmail.com',
-				'smtp_pass' => 'zlsbsegzfpbnkzsp',
+				'smtp_user' => '111@gmail.com',
+				'smtp_pass' => 'password',
 				'smtp_port' => 465,
 				'mailtype' => 'html',
 				'charset' => 'utf-8',
@@ -217,14 +219,16 @@ class Auth extends CI_Controller
 		if ($type == 'verify') {
 			$this->email->subject('Account Verification');
 			$this->email->message('
-			<div class="wrapper" style="width: 100%; height: 100%; border: 1px; border-radius: 50px; background: rgb(255,255,255);        background: linear-gradient(90deg, rgba(255,255,255,1) 10%, rgba(75,231,255,1) 100%); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: 30px;">
+			<div class="wrapper" style="width: 100%; height: 100%; border: 1px; border-radius: 50px; background: rgb(255,255,255);        
+			background: linear-gradient(90deg, rgba(255,255,255,1) 10%, rgba(75,231,255,1) 100%); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: 30px;">
                 <div class="content" style="margin: 30px; padding-top: 70px; padding-bottom: 70px;">
                 
                         <h2>Hai, ' . $username . '</h2>
                 
                         <div class="deskripsi" style=" margin-top: 20px;">
                             <form action="" style="margin-top: 0;">
-                                <p><h4>Kamu baru saja mendaftar member di <i>Anugrah Rental Jaya</i>. Silakan klik <a href="' . base_url('auth/verify?email=' . $email . '&token=' . urlencode($token)) . '"> disini</a> untuk aktivasi akun anda.</h4></p>
+                                <p><h4>Kamu baru saja mendaftar member di <i>Anugrah Rental Jaya</i>. 
+								Silakan klik <a href="' . base_url('auth/verify?email=' . $email . '&token=' . urlencode($token)) . '"> disini</a> untuk aktivasi akun anda.</h4></p>
                                 
                             </form>
                         </div> 
@@ -239,14 +243,16 @@ class Auth extends CI_Controller
 		} else if ($type == 'forgot') {
 			$this->email->subject('Forgot Password');
 			$this->email->message('
-			<div class="wrapper" style="width: 100%; height: 100%; border: 1px; border-radius: 50px; background: rgb(255,255,255);        background: linear-gradient(90deg, rgba(255,255,255,1) 10%, rgba(75,231,255,1) 100%); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: 30px;">
+			<div class="wrapper" style="width: 100%; height: 100%; border: 1px; border-radius: 50px; background: rgb(255,255,255);        
+			background: linear-gradient(90deg, rgba(255,255,255,1) 10%, rgba(75,231,255,1) 100%); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: 30px;">
                 <div class="content" style="margin: 30px; padding-top: 70px; padding-bottom: 70px;">
                 
                         <h2>Hai, ' . $username . '</h2>
                 
                         <div class="deskripsi" style=" margin-top: 20px;">
                             <form action="" style="margin-top: 0;">
-                                <p><h4>Untuk mengganti password akun member anda di <i>Anugrah Rental Jaya</i>. Silakan klik <a href="' . base_url('auth/resetpassword?email=' . $email . '&token=' . urlencode($token)) . '"> disini</a> untuk mengganti password anda.</h4></p>
+                                <p><h4>Untuk mengganti password akun member anda di <i>Anugrah Rental Jaya</i>. 
+								Silakan klik <a href="' . base_url('auth/resetpassword?email=' . $email . '&token=' . urlencode($token)) . '"> disini</a> untuk mengganti password anda.</h4></p>
                                 
                             </form>
                         </div> 
@@ -455,22 +461,13 @@ class Auth extends CI_Controller
 	}
 
 
-
-
-
-
-
-
-
-
-
-
 	public function logout()
 	{
 		$this->session->unset_userdata('email');
-		$this->session->unset_userdata('role_id');
+		$this->session->unset_userdata('role');
+		$this->session->unset_userdata('user_id');
 
-		$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert"> Anda telah logout !</div>');
+		$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert"> Anda telah logout !</div>');
 		redirect('auth');
 	}
 }

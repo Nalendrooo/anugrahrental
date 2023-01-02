@@ -24,7 +24,7 @@
                 <?php $active = $title == $sm['title_menu'] ? "active" : "collapsed" ?>
 
                 <li class="nav-item">
-                    <a class="nav-link <?= $active ?>" href="<?= $sm['url_menu']; ?>">
+                    <a class="nav-link <?= $active ?>" href="<?= base_url($sm['url_menu'])  ?>">
                         <i class="<?= $sm['icon_menu']; ?>"></i>
                         <span><?= $sm['title_menu']; ?></span>
                     </a>

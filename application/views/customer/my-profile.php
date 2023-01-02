@@ -1,15 +1,17 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Profile</h1>
+        <h1><?= $title ?></h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item">Users</li>
-                <li class="breadcrumb-item active">Profile</li>
+                <li class="breadcrumb-item">Customer</li>
+                <li class="breadcrumb-item active"><?= $title ?></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
+
+    <!-- Alert flash data -->
+    <?= $this->session->flashdata('message'); ?>
 
     <section class="section profile">
         <div class="row">
@@ -18,7 +20,7 @@
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-                        <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                        <img src="<?= base_url() ?>/assets/img/profile/<?= $user['user_image'] ?>" alt="Profile" class="rounded-circle">
                         <h2><?= $user['username'] ?></h2>
                         <h3><?= $user['email'] ?></h3>
                         <div class="social-links mt-2">
@@ -30,6 +32,54 @@
                     </div>
                 </div>
 
+
+                <div class="d-grid gap-2 mt-3 mb-5">
+                    <a href="<?= base_url('customer/ubah_data_diri') ?>" class="btn btn-success" type="button">Ubah Data Diri</a>
+                </div>
+
+
+
+                <?php if ($deposit == NULL) { ?>
+
+                    <div class="card">
+                        <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                            <img src="<?= base_url() ?>/assets/img/depo-logo2.png" alt="Profile">
+                            <p class="text-center">Anda belum melakukan pembayaran deposit</p>
+                            <div class="d-grid gap-2 mt-3">
+                                <a href="<?= base_url('customer/form_pembayaran_deposit') ?>" class="btn btn-primary" type="button"><i class="bi bi-credit-card-2-front"></i> Bayar Deposit</a>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php } else { ?>
+
+                    <?php if ($deposit['status_deposit'] == 0) { ?>
+                        <div class="card">
+                            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                                <img src="<?= base_url() ?>/assets/img/depo-logo.png" alt="Profile">
+                                <p class="text-center">Menunggu verifikasi pembayaran deposit oleh admin</p>
+                                <div class="d-grid gap-2 mt-3">
+
+                                </div>
+                            </div>
+                        </div>
+
+                    <?php } else { ?>
+
+                        <div class="card">
+                            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                                <img src="<?= base_url() ?>/assets/img/depo-logo.png" alt="Profile">
+                                <p class="text-center">Terimakasih anda sudah melakukan pembayaran deposit pada : <?= $deposit['created_at'] ?></p>
+                                <div class="d-grid gap-2 mt-3">
+                                    <a href="<?= base_url('customer/tarik_deposit') ?>" class="btn btn-success" type="button"><i class="bi bi-credit-card-2-front"></i> Tarik Deposit</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    <?php } ?>
+
+                <?php } ?>
+
             </div>
 
             <div class="col-xl-8">
@@ -40,16 +90,12 @@
                         <ul class="nav nav-tabs nav-tabs-bordered">
 
                             <li class="nav-item">
-                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Data Diri</button>
                             </li>
 
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
-                            </li>
-
-                            <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Settings</button>
-                            </li>
+                            </li> -->
 
                             <li class="nav-item">
                                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
@@ -59,52 +105,64 @@
                         <div class="tab-content pt-2">
 
                             <div class="tab-pane fade show active profile-overview" id="profile-overview">
-                                <h5 class="card-title">About</h5>
-                                <p class="small fst-italic">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</p>
 
-                                <h5 class="card-title">Profile Details</h5>
+                                <h5 class="card-title">Profile Detail</h5>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label ">Full Name</div>
-                                    <div class="col-lg-9 col-md-8">Kevin Anderson</div>
+                                    <div class="col-lg-4 col-md-4 label ">Nama Lengkap</div>
+                                    <div class="col-lg-8 col-md-8"><?= $customer['nama_customer'] ?></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Company</div>
-                                    <div class="col-lg-9 col-md-8">Lueilwitz, Wisoky and Leuschke</div>
+                                    <div class="col-lg-4 col-md-4 label">Alamat</div>
+                                    <div class="col-lg-8 col-md-8"><?= $customer['alamat_customer'] ?></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Job</div>
-                                    <div class="col-lg-9 col-md-8">Web Designer</div>
+                                    <div class="col-lg-4 col-md-4 label">Kecamatan</div>
+                                    <div class="col-lg-8 col-md-8"><?= $customer['kecamatan_customer'] ?></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Country</div>
-                                    <div class="col-lg-9 col-md-8">USA</div>
+                                    <div class="col-lg-4 col-md-4 label">Kabupaten / Kota</div>
+                                    <div class="col-lg-8 col-md-8"><?= $customer['kota_customer'] ?></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Address</div>
-                                    <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
+                                    <div class="col-lg-4 col-md-4 label">Jenis Kelamin</div>
+                                    <div class="col-lg-8 col-md-8"><?= $customer['jenis_kelamin_customer'] ?></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Phone</div>
-                                    <div class="col-lg-9 col-md-8">(436) 486-3538 x29071</div>
+                                    <div class="col-lg-4 col-md-4 label">Email</div>
+                                    <div class="col-lg-8 col-md-8"><?= $user['email'] ?></div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Email</div>
-                                    <div class="col-lg-9 col-md-8">k.anderson@example.com</div>
+                                    <div class="col-lg-4 col-md-4 label">Nomor HP</div>
+                                    <div class="col-lg-8 col-md-8"><?= $customer['nomor_hp_customer'] ?></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 label">Status Pekerjaan</div>
+                                    <div class="col-lg-8 col-md-8"><?= $customer['status_pekerjaan_customer'] ?></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 label">Pekerjaan Sekarang</div>
+                                    <div class="col-lg-8 col-md-8"><?= $customer['pekerjaan_sekarang_customer'] ?></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 label">Sosmed</div>
+                                    <div class="col-lg-8 col-md-8"><?= $customer['sosmed_customer'] ?></div>
                                 </div>
 
                             </div>
 
-                            <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                            <!-- <div class="tab-pane fade profile-edit pt-3" id="profile-edit"> -->
 
-                                <!-- Profile Edit Form -->
-                                <form>
+                            <!-- Profile Edit Form -->
+                            <!-- <form>
                                     <div class="row mb-3">
                                         <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                                         <div class="col-md-8 col-lg-9">
@@ -203,53 +261,13 @@
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary">Save Changes</button>
                                     </div>
-                                </form><!-- End Profile Edit Form -->
+                                </form> -->
+                            <!-- End Profile Edit Form -->
 
-                            </div>
-
-                            <div class="tab-pane fade pt-3" id="profile-settings">
-
-                                <!-- Settings Form -->
-                                <form>
-
-                                    <div class="row mb-3">
-                                        <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="changesMade" checked>
-                                                <label class="form-check-label" for="changesMade">
-                                                    Changes made to your account
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="newProducts" checked>
-                                                <label class="form-check-label" for="newProducts">
-                                                    Information on new products and services
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="proOffers">
-                                                <label class="form-check-label" for="proOffers">
-                                                    Marketing and promo offers
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="securityNotify" checked disabled>
-                                                <label class="form-check-label" for="securityNotify">
-                                                    Security alerts
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    </div>
-                                </form><!-- End settings Form -->
-
-                            </div>
+                            <!-- </div> -->
 
                             <div class="tab-pane fade pt-3" id="profile-change-password">
+
                                 <!-- Change Password Form -->
                                 <form>
 
@@ -277,7 +295,8 @@
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary">Change Password</button>
                                     </div>
-                                </form><!-- End Change Password Form -->
+                                </form>
+                                <!-- End Change Password Form -->
 
                             </div>
 

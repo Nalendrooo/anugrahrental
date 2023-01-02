@@ -7,7 +7,7 @@ class Admin extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        // is_logged_in();
+        is_logged_in();
         $this->load->model('adminModel');
         $this->load->model('accessModel');
     }
